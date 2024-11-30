@@ -31,6 +31,7 @@ def generate_board(x,y):
                 row.append('X')
             else:
                 row.append('0')
+            
         board.append(row)
     return board
 
@@ -92,12 +93,15 @@ def print_grid(emptygrid):
     final_row = ""
     # for each row of board
     for i in range(len(emptygrid)):
+        for j in range(len(emptygrid[i])):
+            if i == 0:
+                if j == 0:
+                    final_row += '{:>4}'.format(letters[j])
+                else:
+                    final_row += '{:>3}'.format(letters[j])
+    for i in range(len(emptygrid)):
         row = ''
         # edit final row by adding letter of colum
-        if i == 0:
-            final_row += '{:>4}'.format(letters[i])
-        else:
-            final_row += '{:>3}'.format(letters[i])
         # for each item-index in each row of board
         for j in range(len(emptygrid[i])):
             # add a blank space and fill it with whats in user_view board
@@ -120,6 +124,8 @@ def dig(updategrid,coord,emptygrid):
     Returns:
         list: updated userview of grid
     """
+    print(f'coord reads {coord}')
+    print(f'coord read len is {len(coord)}')
     # the b index is the first input, it is a letter
     b = coord[0]
     # the index of that letter in letters is the desired index
@@ -127,9 +133,14 @@ def dig(updategrid,coord,emptygrid):
     # if our digit coord is 1 digit just assign index
     if len(coord) == 2:
         a = len(updategrid)- 1 - int(coord[1])
+    elif len(coord) == 3 and coord[2] == " ":
+        a = len(updategrid)- 1 - int(coord[1])
     # if our digit coord is 2 digits, concatenate them together, then assign index
-    elif len(coord) == 3:
+    elif len(coord) == 4 and coord[3] == " ":
         a = len(updategrid)-1 - int(coord[1]+coord[2])
+    elif len(coord) == 3 and coord[2].isnumeric() == True:
+        a = len(updategrid)-1 - int(coord[1]+coord[2])
+
     # if this spot isn't flagged
     if emptygrid[a][b] != '?':
         # update this spot to the answer key
@@ -272,7 +283,7 @@ input prompts to enter flag or unflag mode. Good luck, have fun!\n'
         # take inputm if input is flag or unflag enter those modes
         coord = input("Enter a cordinate pair: ")
         coord += " "
-        if coord == "flag":
+        if coord == "flag ":
             coord = input("Enter cordinate to flag: ")
             coord += " "
             # if coord not valid reask
@@ -282,7 +293,7 @@ input prompts to enter flag or unflag mode. Good luck, have fun!\n'
                 coord = input('Enter cordinate to flag : ')
                 coord += " "
             flag(user_view,coord)
-        elif coord == 'unflag':
+        elif coord == 'unflag ':
             coord = input("Enter a cordinate to unflag: ")
             while len(coord) < 2 or coord[0].isnumeric() == True \
                 or coord[1].isalpha() == True or int(str(coord[1])+str(coord[2]))>=x\
